@@ -1,0 +1,3 @@
+import method
+
+method.random()
