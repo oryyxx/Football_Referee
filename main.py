@@ -1,3 +1,0 @@
-import method
-
-method.random()
