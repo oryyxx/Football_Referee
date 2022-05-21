@@ -4,8 +4,11 @@ from PyQt5.QtCore import *
 import camera
 import score
 import time
+import tracker
+import draw
 
 duration = 0
+fps = 0
 
 #Construction for the window application
 class Gui(QWidget):
@@ -19,12 +22,10 @@ class Gui(QWidget):
         self.FeedLabel = QLabel()
         self.ScoreALabel = QLabel(("Team A: " + str(score.getScore('a'))), self)
         self.ScoreBLabel = QLabel(("Team B: " + str(score.getScore('b'))), self)
-        self.ProcessDur = QLabel(("Proccess Duration: " + str(round(duration)) + "ms"), self)
 
         self.VBL.addWidget(self.FeedLabel)
         self.VBL.addWidget(self.ScoreALabel)
         self.VBL.addWidget(self.ScoreBLabel)
-        self.VBL.addWidget(self.ProcessDur)
         
         self.ResetButton = QPushButton("Reset")
         self.ResetButton.clicked.connect(score.resetScore)
@@ -40,7 +41,6 @@ class Gui(QWidget):
         self.FeedLabel.setPixmap(QPixmap.fromImage(image))
         self.ScoreALabel.setText(("Team A: " + str(score.getScore('a'))))
         self.ScoreBLabel.setText(("Team B: " + str(score.getScore('b'))))
-        self.ProcessDur.setText(("Proccess Duration: " + str(round(duration)) + "ms"))
 
 
 
@@ -57,6 +57,7 @@ class Worker1(QThread):
         # "Main loop" - computer vision should be moved to a different loop
         while self.ThreadActive:
             global duration
+            global fps
 
             #get the current time in ns to calculate duration for proccessing
             t = time.time_ns() 
@@ -64,10 +65,19 @@ class Worker1(QThread):
             #updating image from webcam
             camera.updateImage()
 
-            #computer vision should be proccessed here (for now)
-
-            #fetching image to display on the gui
+            #fetching the latest image
             image = camera.getImage()
+
+            #---------- computer vision should be proccessed here (for now) ------  
+
+            #finalImage = tracker.trackHand(image)
+            #image = draw.rect(image, "rect", 100, 100, 200, 200, 3)
+
+
+            # ----------------------------------------------------------------------
+
+            #draw fps on image
+            image = draw.fps(image, round(fps))
 
             #image being converted to QImage for displaying (for Pyqt to render it)
             ConvertToQtFormat = QImage(image.data, image.shape[1], image.shape[0], QImage.Format_RGB888)
@@ -80,6 +90,9 @@ class Worker1(QThread):
             #convert duration from ns to milisec
             duration = duration / 1000000
 
+            fps = 1000 / duration
+
     def stop(self):
         self.ThreadActive = False
+        camera.closeCamera()
         self.quit()
