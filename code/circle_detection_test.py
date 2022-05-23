@@ -2,13 +2,14 @@
 import numpy as np
 import argparse
 import cv2
+from camera import getImage
 # construct the argument parser and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", required = True, help = "Path to the image")
-args = vars(ap.parse_args())
+# ap = argparse.ArgumentParser()
+# ap.add_argument("-i", "--image", required = True, help = "Path to the image")
+# args = vars(ap.parse_args())
 
 # load the image, clone it for output, and then convert it to grayscale
-image = cv2.imread(args["image"])
+image = getImage()
 output = image.copy()
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
