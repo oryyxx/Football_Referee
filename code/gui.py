@@ -1,46 +1,123 @@
+from tkinter import Menubutton
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QMenu
+from matplotlib.pyplot import show
 import camera
 import score
 import time
 import tracker
 import draw
 
+#temp variables
 duration = 0
 fps = 0
+showFPS = False
+isGameRunning = False
 
 #Construction for the window application
-class Gui(QWidget):
+class Gui(QMainWindow):
     def __init__(self):
         super(Gui, self).__init__()
 
+        self._createMenuBarActions()
+        self._createMenuBar()
+        self._connectAction()
+
         #setting up labels and GUI using Pyqt
         self.setWindowTitle("Football Referee")
-        self.VBL = QVBoxLayout()
+        self.centralWidget = QLabel()
+        self.centralWidget.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.setCentralWidget(self.centralWidget)
 
-        self.FeedLabel = QLabel()
-        self.ScoreALabel = QLabel(("Team A: " + str(score.getScore('a'))), self)
-        self.ScoreBLabel = QLabel(("Team B: " + str(score.getScore('b'))), self)
+        #self.VBL = QVBoxLayout()
 
-        self.VBL.addWidget(self.FeedLabel)
-        self.VBL.addWidget(self.ScoreALabel)
-        self.VBL.addWidget(self.ScoreBLabel)
+        #self.FeedLabel = QLabel()
+        #self.ScoreALabel = QLabel(("Team A: " + str(score.getScore('a'))), self)
+        #self.ScoreBLabel = QLabel(("Team B: " + str(score.getScore('b'))), self)
+
+        #self.VBL.addWidget(self.FeedLabel)
+        #self.VBL.addWidget(self.ScoreALabel)
+        #self.VBL.addWidget(self.ScoreBLabel)
         
-        self.ResetButton = QPushButton("Reset")
-        self.ResetButton.clicked.connect(score.resetScore)
-        self.VBL.addWidget(self.ResetButton)
+        #self.ResetButton = QPushButton("Reset")
+        #self.ResetButton.clicked.connect(score.resetScore)
+        #self.VBL.addWidget(self.ResetButton)
 
         self.Worker1 = Worker1()
         self.Worker1.start()
-        self.Worker1.ImageUpdate.connect(self.ImageUpdateSlot)
-        self.setLayout(self.VBL)
+        self.Worker1.ImageUpdate.connect(self.UpdateFeed)
+        
 
+    def _createMenuBar(self):
+        menuBar = self.menuBar()
+
+        gameMenu = QMenu("&Game", self)
+        debugMenu = QMenu("&Debug", self)
+
+        menuBar.addMenu(gameMenu)
+        menuBar.addMenu(debugMenu)
+
+        debugMenu.addAction(self.fpsAction)
+
+        gameMenu.addAction(self.gameStart)
+        gameMenu.addAction(self.gameReset)
+        gameMenu.addAction(self.gamePause)
+        gameMenu.addAction(self.gameExit)
+        
+    
+    def _createMenuBarActions(self):
+
+        self.fpsAction = QAction("&FPS...", self)
+        
+        self.gameStart = QAction("&Start", self)
+        self.gamePause = QAction("&Pause", self)
+        self.gameReset = QAction("&Restart",self)
+        self.gameExit = QAction("&Exit",self)
+
+    def _connectAction(self):
+
+        self.fpsAction.triggered.connect(self.fpsActionTriggered)
+
+        self.gameStart.triggered.connect(self.gameStartTrig)
+        self.gamePause.triggered.connect(self.gamePauseTrig)
+        self.gameReset.triggered.connect(self.gameResetTrig)
+        self.gameExit.triggered.connect(self.gameExitTrig)
+
+    #------------------ Menu Actions ------------------
+    def fpsActionTriggered(self):
+        global showFPS
+
+        if showFPS:
+            showFPS = False
+        else:
+            showFPS = True
+    
+    def gameStartTrig(self):
+        global isGameRunning
+
+        if not isGameRunning:
+            isGameRunning = True
+        
+        self.gameResetTrig()
+
+        print("start pressed")
+    
+    def gameResetTrig(self):
+        
+        score.resetScore()
+        print("restart pressed")
+    
+    def gamePauseTrig(self):
+        print("Pause pressed")
+
+    def gameExitTrig(self):
+        print("start pressed")
+    
     #Calls when its time to update the gui
-    def ImageUpdateSlot(self, image):
-        self.FeedLabel.setPixmap(QPixmap.fromImage(image))
-        self.ScoreALabel.setText(("Team A: " + str(score.getScore('a'))))
-        self.ScoreBLabel.setText(("Team B: " + str(score.getScore('b'))))
+    def UpdateFeed(self, image):
+        self.centralWidget.setPixmap(QPixmap.fromImage(image))
 
 
 
@@ -77,7 +154,11 @@ class Worker1(QThread):
             # ----------------------------------------------------------------------
 
             #draw fps on image
-            image = draw.fps(image, round(fps))
+            if(showFPS):
+                image = draw.fps(image, round(fps))
+
+            #draw score on image
+            image = draw.score(image, score.getScore('a'), score.getScore('b'))
 
             #image being converted to QImage for displaying (for Pyqt to render it)
             ConvertToQtFormat = QImage(image.data, image.shape[1], image.shape[0], QImage.Format_RGB888)
@@ -95,4 +176,4 @@ class Worker1(QThread):
     def stop(self):
         self.ThreadActive = False
         camera.closeCamera()
-        self.quit()
+        self.quit() 

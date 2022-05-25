@@ -7,7 +7,7 @@ def rect(image, text, x1, y1, x2, y2, c):
     global font
     global fontScale
 
-    height, weidth, channels = image.shape
+    #height, weidth, channels = image.shape
 
     color = { 0: (255, 0, 0), 1: (0, 255, 0), 2: (0, 0, 255)}
 
@@ -20,5 +20,11 @@ def rect(image, text, x1, y1, x2, y2, c):
     return newImage
 
 def fps(image, fps):
-    return cv2.putText(image, ("FPS: " + str(fps)), (0, 16), font, fontScale, 
+    width = image.shape[0]
+
+    return cv2.putText(image, ("FPS:" + str(fps)), (width, 16), font, fontScale, 
+                 (255,0,0), 1, cv2.LINE_AA, False)
+
+def score(image, a, b):
+    return cv2.putText(image, ("Team A:" + str(a) + " Team B:" + str(b)), (0, 16), font, fontScale, 
                  (0,255,0), 1, cv2.LINE_AA, False)
