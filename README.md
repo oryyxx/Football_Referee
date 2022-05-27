@@ -11,6 +11,7 @@
 
 ## Getting Started
 In order to run the program few packages need to be downloaded.
+
 **Prerequisites**
 - cv2
 ```
