@@ -12,7 +12,7 @@
 ## Getting Started
 In order to run the program few packages need to be downloaded.
 
-**Prerequisites**
+### Prerequisites
 - cv2
 ```
 pip install opencv-python
@@ -25,7 +25,7 @@ pip install PyQt5
 ```
 pip install numpy
 ```
-**Installation**
+### Installation
 1. clone the repo via git
 ```
 git clone https://github.com/sma1043/Football_Referee.git
