@@ -28,8 +28,6 @@ git clone https://github.com/sma1043/Football_Referee.git
 If you you would like to run the program live use (assuming ZED camera is connected):
 ```
 python main.py
-```
 Or, you can run on a pre recorded match (musth be svo file):
-```
 python main.py --svo (videofile).svo
 ```
