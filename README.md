@@ -39,5 +39,5 @@ The program can run from a connected camera or via pre recorded match
 ```
 python main.py
 or,
-python main.py --svo (videofile).svo
+python main.py --svo demo.svo
 ```
