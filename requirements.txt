@@ -1,0 +1,8 @@
+asposestorage==1.0.2
+numpy==1.23.3
+opencv_python==4.6.0.66
+pandas==1.4.3
+pyzed==3.7
+scikit_learn==1.1.2
+torch==1.12.1
+utils==1.0.1
