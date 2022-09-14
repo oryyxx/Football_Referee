@@ -12,8 +12,6 @@ The program acts like a referee, uses stereo cameras specifically [ZED 2 cameras
 - Display 2D map of the game
 
 ## Getting Started
-In order to run the program few packages need to be downloaded.
-
 ### Hardware:
 - RAM: +4 GB
 - GPU: nvidia GPU (atleast 6-8gb VRAM)
