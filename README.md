@@ -16,7 +16,7 @@ In order to run the program few packages need to be downloaded.
 
 ### Hardware:
 - RAM: +4 GB
-- GPU: Nividia GPU (atleast 6-8gb VRAM)
+- GPU: nvidia GPU (atleast 6-8gb VRAM)
 
 ### Drivers:
 | Drivers  | Version | Link|
