@@ -10,29 +10,21 @@
 In order to run the program few packages need to be downloaded.
 
 ### Prerequisites
-- cv2
+All libraries can be found in the requirments.txt if you are using pip, you can easily the libraries by following the command:
 ```
-pip install opencv-python
-```
-- Pyqt5
-```
-pip install PyQt5
-```
-- numpy
-```
-pip install numpy
+pip install -r requirments.txt
 ```
 ### Installation
 1. clone the repo via git
 ```
 git clone https://github.com/sma1043/Football_Referee.git
 ```
-2. go to the code directory
-```
-cd code (windows)
-```
-3. run the program
+2. run the program
+If you you would like to run the program live use (assuming ZED camera is connected):
 ```
 python main.py
 ```
-**Note: that the program will turn on your primary webcam**
+Or, you can run on a pre recorded match (musth be svo file):
+```
+python main.py --svo (videofile).svo
+```
