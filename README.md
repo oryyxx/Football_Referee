@@ -3,7 +3,7 @@
 
 Football target is a game consisting of two teams, each team has to score the ball through a goal in the center. Scoring from a further radius from the center gets more points (ie. blue = 0, green = 1, yellow = 2, red = 3).
 
-The program uses stereocameras specifically ZED 2 cameras to act like the referee & Yolov5x6 for object recoginition.
+The program uses stereocameras specifically [ZED 2 cameras](https://www.stereolabs.com/zed-2/) to act like the referee & [Yolov5x6](https://github.com/ultralytics/yolov5) for object recognition.
 
 ### Features:
 - Recoginize and track objects (ie players & ball)
