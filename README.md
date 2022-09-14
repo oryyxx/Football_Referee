@@ -14,7 +14,17 @@ The program uses stereocameras specifically [ZED 2 cameras](https://www.stereola
 ## Getting Started
 In order to run the program few packages need to be downloaded.
 
-### Prerequisites
+### Hardware:
+- RAM: +4 GB
+- GPU: Nividia GPU (atleast 6-8gb VRAM)
+
+### Drivers:
+| Drivers  | Version | Link|
+| ------------- | ------------- | ------------- |
+| ZED SDK  | v3.7.7  | [link](https://www.stereolabs.com/developers/release/)  |
+| CUDA  | v11.3  | [link](https://developer.nvidia.com/cuda-downloads)  |
+
+### Python Libraries
 All libraries can be found in the requirments.txt if you are using pip, you can easily the libraries by following the command:
 ```
 pip install -r requirments.txt
