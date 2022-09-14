@@ -1,11 +1,7 @@
 (Work in progress)
 # Referee for football target
 
-## Table of Content
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-</details>
+![gif](https://user-images.githubusercontent.com/91667636/190073399-196e78a7-a5d2-4518-9e43-3446b59eb734.gif)
 
 ## About The Project
 
