@@ -27,6 +27,11 @@ The program acts like a referee, uses stereo cameras specifically [ZED 2 cameras
 ```
 git clone https://github.com/sma1043/Football_Referee.git
 ```
+2. Since the program uses Yolo model we will need to download Yolov5
+```
+cd Football_Referee
+git clone https://github.com/ultralytics/yolov5.git
+```
 ### Python Libraries
 All libraries can be found in the requirments.txt if you are using pip, you can easily the libraries by following the command:
 ```
