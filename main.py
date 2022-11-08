@@ -1,5 +1,7 @@
-import sys
+#Fixed scoring not adding up
+#Improved Scoreboard visual
 
+import sys
 
 sys.path.insert(0, './yolov5')
 from models.experimental import attempt_load
@@ -28,6 +30,9 @@ exit_signal = False
 model_yolo = "yolov5x6.pt"
 confident_threshold = 0.4
 image_size = 576 #its a lot but hopefully yield better results
+
+#storing previous entities for new frame
+prev_entities = []
 
 def img_preprocess(img, device, half, net_size):
     net_image, ratio, pad = letterbox(img[:, :, :3], net_size, auto=False)
@@ -187,8 +192,8 @@ def main():
         
         # _timer.start()
         if zed.grab(runtime_params) == sl.ERROR_CODE.SUCCESS:
-            entites = []
             lock.acquire()
+            entites = [] #making sure to clear prev entities
             zed.retrieve_image(image_left_tmp, sl.VIEW.LEFT)
             image_net = image_left_tmp.get_data()
             lock.release()
@@ -215,6 +220,7 @@ def main():
             np.copyto(image_left_ocv, image_left.get_data())
 
             #process objects detected:
+            #objects are being recreated again
             for object in objects.object_list:
 
                 if BaseEntity.isWanted(object):
@@ -227,10 +233,9 @@ def main():
                             entites.append(entity)
                             foundBall = True
                     else:
-                        BaseEntity.PredictTeam(image_left_ocv, entity)
-                        entites.append(entity)
-
-
+                        #BaseEntity.PredictTeam(image_left_ocv, entity)
+                        entites.append(entity)         
+                    
             gui.update(image_left_ocv, entites)
             gui.render_boxes(entites, image_scale, obj_param.enable_tracking)
 

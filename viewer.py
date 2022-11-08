@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from distutils.log import debug
 from html import entities
 import logging
@@ -8,6 +9,11 @@ import pyzed.sl as sl
 import logging
 
 logging.basicConfig(level=logging.WARNING)
+
+
+
+scores = {}
+#most of referee happens here
 
 prevBall = ball_pre([])
 
@@ -106,7 +112,7 @@ class mapper:
         self.goalEnd = (int(goalx + self.map.shape[1]/2 + goalw), int(goaly + self.map.shape[0]/2 + goalh))
 
         self.xoffset = (self.map.shape[1] / 2) + 6
-        self.yoffset = (self.map.shape[0] / 2) + 205 + 24
+        self.yoffset = (self.map.shape[0] / 2) + 205 + 20
         self.ballplayer = 0
         self.lastHadBall = 0
 
@@ -132,7 +138,7 @@ class mapper:
                     scoreboard.addPlayer(entity)
 
                     cv2.circle(self.map, (px, py), 8, (128,50,50), -1)
-                    cv2.putText(self.map, str(entity.id), (px + 1, py + 1), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), 1)
+                    cv2.putText(self.map, str(entity.raw_label), (px + 1, py + 1), cv2.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), 1)
                 elif BaseEntity.isBall(entity):
                     self.bx = int(self.xoffset + entity.point[0] * self.radius)
                     self.by = int(self.yoffset + (entity.point[1] * self.radius))
@@ -167,20 +173,25 @@ class mapper:
                         distanceFromCenter = BaseEntity.absDistance(entity.point, (self.map[1] / 2, self.map[0]/2))
 
                         if distanceFromCenter <= self.radius * 1:
-                            entity.score = 0
+                            score = 0
                         elif distanceFromCenter <= self.radius * 2:
-                            entity.score = 1
+                            score = 1
                         elif distanceFromCenter <= self.radius * 3:
-                            entity.score = 2
+                            score = 2
                         else:
-                            entity.score = 3                        
+                            score = 3  
+                        
+                        if str(entity.id) in scores:
+                            scores[str(entity.id)] += score
+                        else:
+                            scores.update({str(entity.id): score});                      
 
                     px = int(self.xoffset + entity.point[0] * self.radius)
                     py = int(self.yoffset + (entity.point[1] * self.radius))
 
                     distanceFromball = BaseEntity.absDistance((px, py), (self.bx, self.by))
 
-                    if distanceFromball <= 50:
+                    if distanceFromball <= 15:
                         scoreboard.ballplayer = entity.id
                         self.lastHadBall = entity.id
 
@@ -197,13 +208,23 @@ class scoreboard:
         self.frame = np.zeros((self.size,self.size,3), np.uint8)
         cv2.putText(self.frame, "| PLAYERS | COORDINATE | TEAM | SCORES |", (5, 20), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (255, 255, 255), 1)
 
-        i = 0 
+        i = 0
+        #id 
         for player in self.players:
-
+            
+            if not str(player.id) in scores:
+                scores.update({str(player.id): 0})
+            
             if player.id == self.ballplayer:
-                cv2.putText(self.frame, f"| {player.id} | {player.point} | {player.team} | {player.score} |", (5, 20 + 20 * i), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0, 255, 255), 1)
+                if i == 1:
+                    cv2.putText(self.frame, f"| {player.id} | {player.point} | White | {scores[str(player.id)]} |", (5, 50 + 20 * i), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0, 255, 255), 1)
+                else:
+                    cv2.putText(self.frame, f"| {player.id} | {player.point} | Black | {scores[str(player.id)]} |", (5, 50 + 20 * i), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0, 255, 255), 1)
             else:
-                cv2.putText(self.frame, f"| {player.id} | {player.point} | {player.team} | {player.score} |", (5, 20 + 20 * i), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (255, 255, 255), 1)
+                if i == 1:
+                    cv2.putText(self.frame, f"| {player.id} | {player.point} | White | {scores[str(player.id)]} |", (5, 50 + 20 * i), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (255, 255, 255), 1)
+                else:
+                    cv2.putText(self.frame, f"| {player.id} | {player.point} | Black | {scores[str(player.id)]} |", (5, 50 + 20 * i), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (255, 255, 255), 1)
             i += 1
 
     def addPlayer(self, player):

@@ -3,10 +3,8 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 import logging
-import cv2
 
-
-
+#each object detected becomes an entity for storing information about it
 class BaseEntity():
     def __init__(self, object, mapper_color = (255, 255, 255)):
 
@@ -32,7 +30,7 @@ class BaseEntity():
     def isBall(entity):
 
         #there could be more labels for the ball
-        if entity.raw_label == 32 or entity.raw_label == 36:
+        if entity.raw_label == 32 or entity.raw_label == 36 or entity.raw_label == 13:
             return True
         else:
             return False
